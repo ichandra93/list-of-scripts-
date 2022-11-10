@@ -1,0 +1,17 @@
+---
+- name: om-kafka-river
+  hosts: am-gateway1
+  become: yes
+  tasks:
+   
+   - name: "Run spark.sh script"
+     command: chdir=/root/scripts/om-kafka-river sh spark.sh
+     async: 15
+     poll: 0 
+   
+   - name: "Check OM Kafka River Status"
+     shell: yarn application -list | grep -i om-kafka-river
+     register: application_status
+
+   - debug:
+       var: application_status.stdout_lines   
